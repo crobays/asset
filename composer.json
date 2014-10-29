@@ -1,6 +1,10 @@
 {
     "name": "crobays/asset",
-    "description": "",
+    "description": "Simple asset query call to get images-, pictures-, stylesheets- and script links.",
+    "version": "0.9.0",
+    "keywords": ["web", "laravel"],
+    "license": "MIT",
+    "type": "project",
     "authors": [
         {
             "name": "Maikel Vlasman",
