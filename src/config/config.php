@@ -2,7 +2,7 @@
 
 return [
 	
-	'url' => '//assets-www.dev.automakelaaraanhuis.nl',
+	'url' => '//assets-www.dev.example.com',
 
 	'pic' => '$URL/pic',
 
