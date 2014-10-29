@@ -1,0 +1,20 @@
+{
+    "name": "crobays/asset",
+    "description": "",
+    "authors": [
+        {
+            "name": "Maikel Vlasman",
+            "email": "0VxMFScFvK9wnCyB@userex.nl"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Crobays\\Asset": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
