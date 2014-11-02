@@ -7,39 +7,45 @@ use Illuminate\Support\Facades\Config;
 */
 class Asset
 {
-	protected static $instance;
-
-	public $config;
-	public $url;
-	public $pic;
-	public $img;
-	public $css;
-	public $js;
-
-	public function __construct()
-	{
-		$this->url = Config::get('asset::url');
-		$this->pic = Config::get('asset::pic');
-		$this->img = Config::get('asset::img');
-		$this->css = Config::get('asset::css');
-		$this->js = Config::get('asset::js');
-	}
-
-	 /**
-     * Handle dynamic method calls
-     *
-     * @param string $name
-     * @param array $args
-     */
-    public static function __callStatic($name, $args)
+    public function url()
     {
-        $instance = static::$instance;
-        if ( ! $instance) $instance = static::$instance = new static;
+        $path = func_get_args();
+        array_unshift($path, Config::get('asset::url'));
+        $path = array_map('trim', $path);
+        return join('/', $path);
+    }
 
-        $base_url = str_replace('$URL', $instance->url, $instance->{$name});
-        $parts = $args;
-        array_unshift($parts, $base_url);
-        return implode('/', $parts);
+    public function img($file)
+    {
+        return static::url(Config::get('asset::img-dir'), $file);
+    }
+
+    public function pic($file)
+    {
+        return static::url(Config::get('asset::pic-dir'), $file);
+    }
+
+    public function file($file)
+    {
+        return static::url(Config::get('asset::file-dir'), $file);
+    }
+
+    public function css($file = NULL)
+    {
+        if (is_null($file))
+        {
+            $file = Config::get('asset::css');
+        }
+        return static::url(Config::get('asset::css-dir'), $file);
+    }
+
+    public function js($file = NULL)
+    {
+        if (is_null($file))
+        {
+            $file = Config::get('asset::js');
+        }
+        return static::url(Config::get('asset::js-dir'), $file);
     }
 
 }

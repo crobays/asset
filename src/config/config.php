@@ -4,11 +4,17 @@ return [
 	
 	'url' => '//assets-www.dev.example.com',
 
-	'pic' => '$URL/pic',
+	'pic-dir' => '/pic',
 
-	'img' => '$URL/img',
+	'img-dir' => '/img',
 
-	'css' => '$URL/style.css',
+	'file-dir' => '/files',
 
-	'js' => '$URL/script.js',
+	'css-dir' => '/',
+
+	'js-dir' => '/',
+
+	'css' => 'style.css',
+
+	'js' => 'script.js',
 ];

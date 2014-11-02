@@ -10,7 +10,7 @@ class AssetServiceProvider extends ServiceProvider {
 	 *
 	 * @var bool
 	 */
-	protected $defer = false;
+	//protected $defer = false;
 
 	/**
 	 * Register the service provider.
@@ -19,13 +19,16 @@ class AssetServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		$this->app['asset'] = $this->app->share(function($app){
+			return new Asset;
+		});
+		//$this->app->bind('asset', 'Crobays\Asset\Asset');
 	}
 
 	public function boot()
 	{
 		$this->package('crobays/asset');
-		AliasLoader::getInstance()->alias('Asset', 'Crobays\Asset\Asset');
+		AliasLoader::getInstance()->alias('Asset', 'Crobays\Facades\Asset');
 	}
 
 	/**
@@ -33,9 +36,9 @@ class AssetServiceProvider extends ServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function provides()
-	{
-		return array();
-	}
+	// public function provides()
+	// {
+	// 	return array();
+	// }
 
 }
