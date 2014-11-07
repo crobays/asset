@@ -3,12 +3,12 @@
 class File extends Asset {
 
     /**
-     * Get the File directory
+     * Get the File uri prefixed by the files folder
      *
      * @return string
      */
-    public function getUri()
+    public function uri()
     {
-        return $this->fetchPath($this->getConfigItem('file'), $this->uri);
+        return $this->fetchPath($this->configItem('file'), $this->uri);
     }
 }

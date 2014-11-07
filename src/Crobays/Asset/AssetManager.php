@@ -36,7 +36,7 @@ class AssetManager
     public function domain()
     {
         $asset = new Asset($this->config);
-        return $asset->getDomain();
+        return $asset->domain();
     }
 
     /**
@@ -52,7 +52,7 @@ class AssetManager
         {
             $asset->setUri($uri);
         }
-        return $asset->getUrl();
+        return $asset->url();
     }
 
     // /**
@@ -67,7 +67,7 @@ class AssetManager
     //     $img->setPath($path);
     //     if ($img->inCache())
     //     {
-    //         return $img->getCached();
+    //         return $img->cached();
     //     }
     //     return $img->make();
     // }
@@ -82,8 +82,8 @@ class AssetManager
     // {
     //     $img = new Image\Image();
     //     $img->setFile($file);
-    //     $img->setParams($params);
-    //     return $img->getUrl();
+    //     $img->addParams($params);
+    //     return $img->url();
     // }
 
     /**
@@ -96,9 +96,8 @@ class AssetManager
     {
         $img = new Image\Image($this->config);
         $img->setUri($file);
-        $img->setParams($params);
-        $img->make();
-        return $img->getHtml();
+        $img->addParams($params);
+        return $img->html();
     }
 
     /**
@@ -111,9 +110,8 @@ class AssetManager
     {
         $img = new Image\Picture($this->config);
         $img->setUri($file);
-        $img->setParams($params);
-        $img->make();
-        return $img->getHtml();
+        $img->addParams($params);
+        return $img->html();
     }
 
     // /**
@@ -126,8 +124,8 @@ class AssetManager
     // {
     //     $pic = new Image\Picture();
     //     $pic->setFile($file);
-    //     $pic->setParams($params);
-    //     return $pic->getUrl();
+    //     $pic->addParams($params);
+    //     return $pic->url();
     // }
 
     /**
@@ -140,8 +138,8 @@ class AssetManager
     {
         $file = new File($this->config);
         $file->setFile($file);
-        $file->setParams($params);
-        return $file->getUrl();
+        $file->addParams($params);
+        return $file->url();
     }
 
     /**
@@ -155,10 +153,10 @@ class AssetManager
         $css = new Css($this->config);
         if ( ! is_null($file))
         {
-            $css->setFile($file);
+            $css->setUri($file);
         }
-        $css->setParams($params);
-        return $css->getHtml();
+        $css->addParams($params);
+        return $css->html();
     }
 
     /**
@@ -172,9 +170,9 @@ class AssetManager
         $js = new Js($this->config);
         if ( ! is_null($file))
         {
-            $js->setFile($file);
+            $js->setUri($file);
         }
-        $js->setParams($params);
-        return $js->getHtml();
+        $js->addParams($params);
+        return $js->html();
     }
 }

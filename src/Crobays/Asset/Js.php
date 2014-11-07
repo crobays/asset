@@ -8,18 +8,23 @@ class Js extends Asset {
 	];
 
     /**
-     * Get the Javascript file
+     * Get the Javascript uri
      *
      * @return string
      */
-    public function getUri()
+    public function uri()
     {
-        return $this->uri ?: $this->fetchPath($this->getConfigItem('js'));
+        return $this->uri ?: $this->fetchPath($this->configItem('js'));
     }
 
-    public function getHtml()
+    /**
+     * Get the Javascript html script element
+     *
+     * @return string
+     */
+    public function html()
     {
-    	$this->addAttribute('src', $this->getUrl());
-    	return '<script'.$this->getAttributesString().'></script>';
+    	$this->setAttribute('src', $this->url());
+    	return '<script'.$this->attributesString().'></script>';
     }
 }

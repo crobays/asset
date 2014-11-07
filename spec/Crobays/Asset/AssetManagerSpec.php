@@ -18,7 +18,7 @@ class AssetManagerSpec extends ObjectBehavior
     {
     	$this->beConstructedWith([
     		'url' => 'http://assets.example.com',
-            'css' => '/style.css',
+            'css' => 'style.css',
         ]);
         $this->domain()->shouldBe('assets.example.com');
         $this->url()->shouldBe('http://assets.example.com');
@@ -28,7 +28,7 @@ class AssetManagerSpec extends ObjectBehavior
     {
     	$this->beConstructedWith([
     		'url' => 'https://assets.example.com',
-            'css' => '/style.css',
+            'css' => 'style.css',
         ]);
         $this->domain()->shouldBe('assets.example.com');
         $this->url()->shouldBe('https://assets.example.com');
@@ -426,5 +426,37 @@ class AssetManagerSpec extends ObjectBehavior
         }
     }
 
-
+    function it_can_create_a_img_html_element_with_width_image_size()
+    {
+        $f = __DIR__."/../../test-images/img/test-image___w1500.jpg";
+        if(is_file($f))
+        {
+            unlink($f);
+        }
+        $this->beConstructedWith([
+            'url' => 'assets.example.com',
+            'root-path' => __DIR__.'/../../test-images',
+            'images-directories' => [
+                'image' => [
+                    'source' => 'images',
+                    'uri' => 'img',
+                ],
+            ],
+            'images-sizes' => [
+                'tiny' => [50, 50],
+                'small' => [200, NULL],
+                'medium-portrait' => [150, 420],
+                'large' => [1000, NULL],
+                'xlarge' => [1500, NULL],
+                'xxlarge' => [2000, NULL],
+                '100%' => ['large', NULL],
+            ],
+        ]);
+        $this->img('test-image.jpg', ['w' => 'xlarge'])->shouldBe('<img width="1500" src="//assets.example.com/img/test-image___w1500.jpg">');
+        
+        if( ! is_file($f))
+        {
+            throw new FailureException("Generation of image failed");
+        }
+    }
 }

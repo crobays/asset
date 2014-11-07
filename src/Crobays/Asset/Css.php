@@ -13,14 +13,14 @@ class Css extends Asset {
      *
      * @return string
      */
-    public function getUri()
+    public function uri()
     {
-        return $this->uri ?: $this->fetchPath($this->getConfigItem('css'));
+        return $this->uri ?: $this->fetchPath($this->configItem('css'));
     }
 
-    public function getHtml()
+    public function html()
     {
-    	$this->addAttribute('href', $this->getUrl());
-    	return '<link'.$this->getAttributesString().'>';
+    	$this->setAttribute('href', $this->url());
+    	return '<link'.$this->attributesString().'>';
     }
 }

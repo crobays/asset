@@ -18,6 +18,6 @@ class PictureSpec extends ObjectBehavior
             'images-directories' => ['picture' => ['source' => 'pictures', 'uri' => 'pic']],
         ]);
     	$this->setUri('test.with.dots.image.jpg');
-     	$this->getUrl()->shouldBe('//assets.example.com/pic/test.with.dots.image.jpg');
+     	$this->url()->shouldBe('//assets.example.com/pic/test.with.dots.image.jpg');
     }
 }
