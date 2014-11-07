@@ -15,9 +15,13 @@
         "php": ">=5.4.0",
         "illuminate/support": "4.2.*"
     },
+    "require-dev": {
+        "phpspec/phpspec": "~2.0",
+        "intervention/image": "dev-master"
+    },
     "autoload": {
-        "psr-0": {
-            "Crobays\\Asset": "src/"
+        "psr-4": {
+            "Crobays\\": "src/"
         }
     },
     "minimum-stability": "stable"
