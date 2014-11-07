@@ -35,9 +35,9 @@ class Asset {
      *
      * @return string
      */
-    public function getDomain()
+    public function domain()
     {
-        $domain = $this->getUrl();
+        $domain = $this->url();
         if ($stripped = strstr($domain, '//'))
         {
             $domain = substr($stripped, 2);
@@ -50,36 +50,36 @@ class Asset {
      *
      * @return string
      */
-    public function getUrl()
+    public function url()
     {
-        if ($uri = $this->getUri())
+        if ($uri = $this->uri())
         {
-            return implode('/', [$this->getBaseUrl(), $uri]);
+            return $this->fetchPath($this->baseUrl(), $uri);
         }
-        return $this->getBaseUrl();
+        return $this->baseUrl();
     }
 
-    /**
-     * Set the assets url
-     * @param string url
-     * @return this
-     */
-    public function setUrl($url)
-    {
-        if ( ! strstr($url, '//'))
-        {
-            $url = "//$url";
-        }
-        $this->url = rtrim($url, '/');
-        return $this;
-    }
+    // /**
+    //  * Set the assets url
+    //  * @param string url
+    //  * @return this
+    //  */
+    // public function setUrl($url)
+    // {
+    //     if ( ! strstr($url, '//'))
+    //     {
+    //         $url = "//$url";
+    //     }
+    //     $this->url = rtrim($url, '/');
+    //     return $this;
+    // }
 
     /**
      * Configure
      * @param string key
      * @return this
      */
-    protected function getConfigItem($key)
+    protected function configItem($key)
     {
         if ( ! array_key_exists($key, $this->config))
         {
@@ -92,9 +92,9 @@ class Asset {
      * Set the assets url
      * @return string
      */
-    public function getBaseUrl()
+    public function baseUrl()
     {
-        if ( ! strstr($url = $this->getConfigItem('url'), '//'))
+        if ( ! strstr($url = $this->configItem('url'), '//'))
         {
             $url = "//$url";
         }
@@ -102,7 +102,7 @@ class Asset {
     }
 
     /**
-     * Set the file
+     * Set the uri
      *
      * @param string
      * @return void
@@ -110,6 +110,22 @@ class Asset {
     public function setUri($uri)
     {
         $this->uri = $this->fetchPath($uri);
+    }
+
+    /**
+     * Get the uri
+     *
+     * @return string
+     */
+    public function uri()
+    {
+        if ( ! $this->uri)
+        {
+            return '';
+        }
+
+        $dir = dirname($this->uri);
+        return $this->fetchPath($dir, $this->fileNameBase().'.'.$this->extension());
     }
 
     /**
@@ -121,7 +137,7 @@ class Asset {
     {
         foreach($params as $k => $v)
         {
-            $this->addAttribute($k, $v);
+            $this->setAttribute($k, $v);
         }
         return $this;
     }
@@ -131,7 +147,7 @@ class Asset {
      *
      * @return string
      */
-    public function addAttribute($attr, $val, $overwrite = TRUE)
+    public function setAttribute($attr, $val, $overwrite = TRUE)
     {
         if( ! $overwrite && array_key_exists($attr, $this->attributes) && ! is_null($this->attributes[$attr]))
         {
@@ -146,7 +162,7 @@ class Asset {
      *
      * @return string
      */
-    public function getAttributes()
+    public function attributes()
     {
         return $this->attributes;
     }
@@ -156,10 +172,10 @@ class Asset {
      *
      * @return string
      */
-    public function getAttributesString()
+    public function attributesString()
     {
         $attrs = array();
-        foreach($this->getAttributes() as $attr => $val)
+        foreach($this->attributes() as $attr => $val)
         {
         	if (is_null($val))
         	{
@@ -175,7 +191,7 @@ class Asset {
      *
      * @return string
      */
-    public function setParams(array $params)
+    public function addParams(array $params)
     {
         $this->addAttributes($params);
     }
@@ -185,7 +201,7 @@ class Asset {
      *
      * @return string
      */
-    function getFileName()
+    function fileName()
     {
         return basename($this->uri);
     }
@@ -195,9 +211,9 @@ class Asset {
      *
      * @return string
      */
-    public function getFileNameBase()
+    public function fileNameBase()
     {
-        $base = strrev(strstr(strrev($this->getFileName()), '.'));
+        $base = strrev(strstr(strrev($this->fileName()), '.'));
         return substr($base, 0, strlen($base) - 1);
     }
 
@@ -206,25 +222,20 @@ class Asset {
      *
      * @return string
      */
-    public function getExtension()
+    public function extension()
     {
-        return strtolower(trim(strrchr($this->getFileName(), '.'), '.'));
+        return strtolower(trim(strrchr($this->fileName(), '.'), '.'));
     }
 
-    public function getUri()
-    {
-    	if ( ! $this->uri)
-    	{
-    		return '';
-    	}
-
-    	$dir = dirname($this->uri);
-        return $this->fetchPath($dir, $this->getFileNameBase().'.'.$this->getExtension());
-    }
-
+    /**
+     * Fetch path
+     *
+     * @var strings ...
+     * @return string
+     */
     protected function fetchPath()
     {
         $path = implode('/', func_get_args());
-        return trim(preg_replace('/\/+/', '/', $path), '/');
+        return rtrim(preg_replace('/(\w)\/+/', '$1/', $path), '/');
     }
 }

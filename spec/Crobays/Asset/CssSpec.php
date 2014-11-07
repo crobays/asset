@@ -16,7 +16,7 @@ class CssSpec extends ObjectBehavior
             'url' => 'assets.example.com',
             'css' => '/style.css',
         ]);
-     	$this->getUrl()->shouldBe('//assets.example.com/style.css');
+     	$this->url()->shouldBe('//assets.example.com/style.css');
     }
 
    	function it_can_create_a_css_with_directory_url()
@@ -26,7 +26,7 @@ class CssSpec extends ObjectBehavior
             'css' => 'styles/style.css',
         ]);
         $this->setUri('styles/style.css');
-     	$this->getUrl()->shouldBe('//assets.example.com/styles/style.css');
+     	$this->url()->shouldBe('//assets.example.com/styles/style.css');
     }
 
    	function it_can_create_a_custom_css_url()
@@ -36,6 +36,6 @@ class CssSpec extends ObjectBehavior
             'css' => 'style.css',
         ]);
         $this->setUri('old-style.css');
-     	$this->getUrl()->shouldBe('//assets.example.com/old-style.css');
+     	$this->url()->shouldBe('//assets.example.com/old-style.css');
     }
 }

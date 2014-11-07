@@ -16,7 +16,7 @@ class JsSpec extends ObjectBehavior
             'url' => 'assets.example.com',
             'js' => '/script.js',
         ]);
-        $this->getUrl()->shouldBe('//assets.example.com/script.js');
+        $this->url()->shouldBe('//assets.example.com/script.js');
     }
 
    	function it_can_create_a_js_with_directory_url()
@@ -26,7 +26,7 @@ class JsSpec extends ObjectBehavior
             'js' => '/script.js',
         ]);
         $this->setUri('/scripts/script.js');
-        $this->getUrl()->shouldBe('//assets.example.com/scripts/script.js');
+        $this->url()->shouldBe('//assets.example.com/scripts/script.js');
     }
     
    	function it_can_create_a_custom_js_url()
@@ -36,6 +36,6 @@ class JsSpec extends ObjectBehavior
             'js' => '/script.js',
         ]);
         $this->setUri('old-script.js');
-        $this->getUrl()->shouldBe('//assets.example.com/old-script.js');
+        $this->url()->shouldBe('//assets.example.com/old-script.js');
     }
 }
