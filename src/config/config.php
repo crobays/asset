@@ -4,17 +4,36 @@ return [
 	
 	'url' => '//assets-www.dev.example.com',
 
-	'pic-dir' => '/pic',
+	'images-directories' => [
+		'picture' => [
+			'source' => 'pictures',
+			'uri' => 'pic',
+		],
+		'image' => [
+			'source' => 'images',
+			'uri' => 'img',
+		],
+	],
 
-	'img-dir' => '/img',
-
-	'file-dir' => '/files',
-
-	'css-dir' => '/',
-
-	'js-dir' => '/',
+	'file' => 'files',
 
 	'css' => 'style.css',
 
 	'js' => 'script.js',
+	
+	'root-path' => '.',
+
+	'arguments-seperator' => '___',
+
+	'argument-seperator' => '-',
+
+	'images-sizes' => [
+		'tiny' => [50, NULL],
+		'small' => [240, NULL],
+		'medium' => [480, NULL],
+		'large' => [960, NULL],
+		'xlarge' => [1440, NULL],
+		'xxlarge' => [2560, NULL],
+        '100%' => ['xlarge', NULL],
+	],
 ];

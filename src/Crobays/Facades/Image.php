@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Facade;
 
-class Asset extends Facade {
+class Image extends Facade {
 
 	protected static function getFacadeAccessor()
 	{
-		return 'asset';
+		return 'image';
 	}
 }

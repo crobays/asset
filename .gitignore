@@ -1,4 +1,6 @@
 /vendor
+/spec/test-images/img
+/spec/test-images/pic
 composer.phar
 composer.lock
 .DS_Store
