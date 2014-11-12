@@ -1,7 +1,7 @@
 {
     "name": "crobays/asset",
     "description": "Simple asset query call to get images-, pictures-, file-, stylesheets- and script links.",
-    "version": "0.9.4",
+    "version": "0.9.5",
     "keywords": ["web", "laravel"],
     "license": "MIT",
     "type": "project",
