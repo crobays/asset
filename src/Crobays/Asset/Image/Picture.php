@@ -2,6 +2,13 @@
 
 class Picture extends Image {
 
-    public $image_directory_key = 'picture';
+    protected $type = 'picture';
+
+    protected $attributes = [
+        'width' => NULL,
+        'height' => NULL,
+        'class' => 'picture',
+        'src' => FALSE,
+    ];
 
 }

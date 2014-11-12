@@ -2,29 +2,27 @@
 
 class AssetManager
 {
-    protected $config = array();
+    protected $config;
 
-    /**
-     * Get the assets domain
-     *
-     * @var Url
-     * @return string
-     */
-    public function __construct(array $config = array())
-    {
-        $this->configure(require(__DIR__.'/../../config/config.php'));
-        $this->configure($config);
-    }
+    // /**
+    //  * Get the assets domain
+    //  *
+    //  * @var Url
+    //  * @return string
+    //  */
+    // public function __construct()
+    // {
+    //     $this->configure(require(__DIR__.'/../../config/config.php'));
+    // }
 
-    /**
-     * Configure
-     * @param array config
-     * @return this
-     */
-    public function configure(array $config = array())
+    // *
+    //  * Configure
+    //  * @param array config
+    //  * @return this
+     
+    public function __construct(\Illuminate\Config\Repository $config)
     {
-        $this->config = array_replace($this->config, $config);
-        return $this;
+        $this->config = $config;
     }
 
     /**
@@ -45,12 +43,12 @@ class AssetManager
      * @var string
      * @return string
      */
-    public function url($uri = NULL)
+    public function url($file = NULL)
     {
         $asset = new Asset($this->config);
-        if( ! is_null($uri))
+        if( ! is_null($file))
         {
-            $asset->setUri($uri);
+            $asset->setFile($file);
         }
         return $asset->url();
     }
@@ -94,8 +92,9 @@ class AssetManager
      */
     public function img($file, $params = array())
     {
-        $img = new Image\Image($this->config);
-        $img->setUri($file);
+        $img_url = new Image\ImageUrl;
+        $img_url->setFile($file);
+        $img = new Image\Image($this->config, $img_url);
         $img->addParams($params);
         return $img->html();
     }
@@ -108,8 +107,9 @@ class AssetManager
      */
     public function pic($file, $params = array())
     {
-        $img = new Image\Picture($this->config);
-        $img->setUri($file);
+        $img_url = new Image\ImageUrl;
+        $img_url->setFile($file);
+        $img = new Image\Picture($this->config, $img_url);
         $img->addParams($params);
         return $img->html();
     }
@@ -153,7 +153,7 @@ class AssetManager
         $css = new Css($this->config);
         if ( ! is_null($file))
         {
-            $css->setUri($file);
+            $css->setFile($file);
         }
         $css->addParams($params);
         return $css->html();
@@ -170,7 +170,7 @@ class AssetManager
         $js = new Js($this->config);
         if ( ! is_null($file))
         {
-            $js->setUri($file);
+            $js->setFile($file);
         }
         $js->addParams($params);
         return $js->html();

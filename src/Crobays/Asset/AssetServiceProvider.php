@@ -25,9 +25,10 @@ class AssetServiceProvider extends ServiceProvider {
 		// });
 		$app = $this->app;
 		$app['asset'] = $app->share(function ($app) {
-			$config = $app['config']->get('asset::config');
-			$config['_use-generator'] = $app->environment('local');
-            return new AssetManager($config);
+//			$config = $app['config']->get('asset::config');
+            $asset_manager = new AssetManager(\App::make('config'));
+//            $asset_manager->configure($config);
+            return $asset_manager;
         });
 		//$this->app->bind('asset', 'Crobays\Asset\Asset');
 	}

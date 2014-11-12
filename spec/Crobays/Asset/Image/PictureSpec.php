@@ -12,11 +12,11 @@ class PictureSpec extends ObjectBehavior
 
    	function it_can_create_an_picture_url()
     {
-        $this->beConstructedWith([
-            'url' => 'assets.example.com',
-            'root-path' => __DIR__.'/../../../test-images',
-            'images-directories' => ['picture' => ['source' => 'pictures', 'uri' => 'pic']],
-        ]);
+        // $this->beConstructedWith([
+        //     'url' => 'assets.example.com',
+        //     'root-path' => __DIR__.'/../../../test-images',
+        //     'images-directories' => ['picture' => ['source' => 'pictures', 'uri' => 'pic']],
+        // ]);
     	$this->setUri('test.with.dots.image.jpg');
      	$this->url()->shouldBe('//assets.example.com/pic/test.with.dots.image.jpg');
     }

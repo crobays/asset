@@ -10,24 +10,20 @@ class ImageSpec extends ObjectBehavior
         $this->shouldHaveType('Crobays\Asset\Image\Image');
     }
 
-    function it_can_create_an_image_url()
+    function it_can_create_an_image_url(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $image_url)
     {
-        $this->beConstructedWith([
-            'url' => 'assets.example.com',
-            'root-path' => __DIR__.'/../../../test-images',
-            'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
-        ]);
+        //$this->beConstructedWith(\m::make('config'), \m::make('ImageUrl'));
         $this->setUri('test-image.jpg');
         $this->url()->shouldBe('//assets.example.com/img/test-image.jpg');
     }
 
-    function it_accepts_svg()
+    function it_accepts_svg(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $image_url)
     {
-        $this->beConstructedWith([
-            'url' => 'assets.example.com',
-            'root-path' => __DIR__.'/../../../test-images',
-            'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
-        ]);
+        // $this->beConstructedWith([
+        //     'url' => 'assets.example.com',
+        //     'root-path' => __DIR__.'/../../../test-images',
+        //     'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
+        // ]);
         $this->setUri('trollface.svg');
         $this->uri()->shouldBe('img/trollface.svg');
         $this->url()->shouldBe('//assets.example.com/img/trollface.svg');
@@ -36,13 +32,13 @@ class ImageSpec extends ObjectBehavior
         $this->extension()->shouldBe('svg');
     }
 
-    function it_can_have_dots_in_file_name()
+    function it_can_have_dots_in_file_name(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $image_url)
     {
-        $this->beConstructedWith([
-            'url' => 'assets.example.com',
-            'root-path' => __DIR__.'/../../../test-images',
-            'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
-        ]);
+        // $this->beConstructedWith([
+        //     'url' => 'assets.example.com',
+        //     'root-path' => __DIR__.'/../../../test-images',
+        //     'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
+        // ]);
         $this->setUri('sub-directory/test.image.png');
         $this->uri()->shouldBe('img/sub-directory/test.image.png');
         $this->fileName()->shouldBe('test.image.png');
@@ -50,21 +46,21 @@ class ImageSpec extends ObjectBehavior
         $this->extension()->shouldBe('png');
     }
 
-    function it_fetches_root_path_with_trailing_slash()
+    function it_fetches_root_path_with_trailing_slash(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $image_url)
     {
     	$this->beConstructedWith(['root-path' => '/project/assets/']);
     	$this->rootPath()->shouldBe('/project/assets');
     }
 
-    function it_accepts_img_uri_with_no_param()
+    function it_accepts_img_uri_with_no_param(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $image_url)
     {
-    	$this->beConstructedWith([
-            'url' => 'assets.example.com',
-            'root-path' => __DIR__.'/../../../test-images',
-            'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
-            'arguments-seperator' => '___',
-            'argument-seperator' => '-',
-        ]);
+    	// $this->beConstructedWith([
+     //        'url' => 'assets.example.com',
+     //        'root-path' => __DIR__.'/../../../test-images',
+     //        'images-directories' => ['image' => ['source' => 'images', 'uri' => 'img']],
+     //        'arguments-seperator' => '___',
+     //        'argument-seperator' => '-',
+     //    ]);
     	$this->setUri('test-image.jpg');
     	$this->extension()->shouldBe('jpg');
         $this->uri()->shouldBe('img/test-image.jpg');

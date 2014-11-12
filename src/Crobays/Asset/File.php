@@ -9,6 +9,6 @@ class File extends Asset {
      */
     public function uri()
     {
-        return $this->fetchPath($this->configItem('file'), $this->uri);
+        return $this->fetchPath($this->config->get('asset::file'), $this->uri);
     }
 }

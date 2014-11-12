@@ -2,11 +2,13 @@
 
 class Asset {
 
-	protected $config = array();
+	protected $config;
 
 	protected $attributes = array();
 
 	protected $uri;
+
+    protected $base_url;
 
 	/**
      * Get the assets domain
@@ -14,20 +16,9 @@ class Asset {
      * @var Url
      * @return string
      */
-    public function __construct(array $config = array())
+    public function __construct(\Illuminate\Config\Repository $config)
     {
-        $this->configure($config);
-    }
-
-    /**
-     * Configure
-     * @param array config
-     * @return this
-     */
-    public function configure(array $config = array())
-    {
-        $this->config = array_replace($this->config, $config);
-        return $this;
+        $this->config = $config;
     }
 
 	/**
@@ -37,7 +28,7 @@ class Asset {
      */
     public function domain()
     {
-        $domain = $this->url();
+        $domain = $this->baseUrl();
         if ($stripped = strstr($domain, '//'))
         {
             $domain = substr($stripped, 2);
@@ -70,35 +61,59 @@ class Asset {
     //     {
     //         $url = "//$url";
     //     }
-    //     $this->url = rtrim($url, '/');
+    //     $this->base_url = rtrim($url, '/');
     //     return $this;
     // }
 
-    /**
-     * Configure
-     * @param string key
-     * @return this
-     */
-    protected function configItem($key)
-    {
-        if ( ! array_key_exists($key, $this->config))
-        {
-            throw new Exception\InvalidConfigItemException("The following config item does not exist: $key", 1);
-        }
-        return $this->config[$key];
-    }
+    
 
     /**
-     * Set the assets url
+     * Get the asset url
      * @return string
      */
     public function baseUrl()
     {
-        if ( ! strstr($url = $this->configItem('url'), '//'))
+        if (is_null($this->base_url))
+        {
+            $this->setBaseUrl($this->config->get('asset::url'));
+        } 
+
+        return $this->base_url;
+    }
+
+    /**
+     * Set the asset url
+     * @return string
+     */
+    public function setBaseUrl($url)
+    {
+        if ( ! strstr($url, '//'))
         {
             $url = "//$url";
         }
-        return rtrim($url, '/');
+        $this->base_url = rtrim($url, '/');
+        return $this;
+    }
+
+    /**
+     * Set the uri
+     *
+     * @param string
+     * @return void
+     */
+    public function setFile($file)
+    {
+        if (preg_match('/(http(s)?:)?\/\/[^\/]*/', $file, $match))
+        {
+            $url = $match[0];
+            $uri = substr($file, strlen($url));
+            $this->setBaseUrl($url);
+            $this->setUri($uri);
+            return $this;
+        }
+
+        $this->setUri($file);
+        return $this;
     }
 
     /**
@@ -119,13 +134,14 @@ class Asset {
      */
     public function uri()
     {
-        if ( ! $this->uri)
-        {
-            return '';
-        }
+        return $this->uri;
+        // if ( ! $this->uri)
+        // {
+        //     return '';
+        // }
 
-        $dir = dirname($this->uri);
-        return $this->fetchPath($dir, $this->fileNameBase().'.'.$this->extension());
+        // $dir = dirname($this->uri);
+        // return $this->fetchPath($dir, $this->fileNameBase().'.'.$this->extension());
     }
 
     /**
@@ -196,36 +212,36 @@ class Asset {
         $this->addAttributes($params);
     }
 
-    /**
-     * Get the file name
-     *
-     * @return string
-     */
-    function fileName()
-    {
-        return basename($this->uri);
-    }
+    // /**
+    //  * Get the file name
+    //  *
+    //  * @return string
+    //  */
+    // function fileName()
+    // {
+    //     return basename($this->uri);
+    // }
 
-    /**
-     * Get the file name base
-     *
-     * @return string
-     */
-    public function fileNameBase()
-    {
-        $base = strrev(strstr(strrev($this->fileName()), '.'));
-        return substr($base, 0, strlen($base) - 1);
-    }
+    // /**
+    //  * Get the file name base
+    //  *
+    //  * @return string
+    //  */
+    // public function fileNameBase()
+    // {
+    //     $base = strrev(strstr(strrev($this->fileName()), '.'));
+    //     return substr($base, 0, strlen($base) - 1);
+    // }
 
-    /**
-     * Get the extension
-     *
-     * @return string
-     */
-    public function extension()
-    {
-        return strtolower(trim(strrchr($this->fileName(), '.'), '.'));
-    }
+    // /**
+    //  * Get the extension
+    //  *
+    //  * @return string
+    //  */
+    // public function extension()
+    // {
+    //     return strtolower(trim(strrchr($this->fileName(), '.'), '.'));
+    // }
 
     /**
      * Fetch path

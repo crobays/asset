@@ -1,17 +1,17 @@
 <?php namespace Crobays\Asset\Image;
 
-use Intervention\Image\ImageManager as Manipulator;
+use Intervention\Image\ImageManager;
 use Crobays\Asset\Exception;
 
-class ImageGenerator {
-
-	protected $manipulator;
+class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver {
 
 	protected $image;
 
-	protected $new_path;
+	protected $dest_path;
 
 	protected $source_path;
+
+    protected $extension;
 
 	protected $multiplier = 1;
 
@@ -27,11 +27,6 @@ class ImageGenerator {
 
 	protected $crop_y = NULL;
 
-	public function __construct()
-    {
-        $this->manipulator = new Manipulator;
-    }
-
 	public function make()
     {
         if ( ! $this->outdated())
@@ -39,11 +34,16 @@ class ImageGenerator {
             return $this;
         }
 
-        @mkdir(dirname($this->new_path), 0777, TRUE);
-
-        if ( ! $this->canBeManipulated())
+        if ( ! is_file($this->source_path))
         {
-            copy($this->source_path, $this->new_path);
+            throw new Exception\InvalidImagePathException("Invalid image: ".$this->source_path, 1);
+        }
+        
+        @mkdir(dirname($this->dest_path), 0777, TRUE);
+        if ( ! $this->canBeManipulated() || ! $this->hasManipulations())
+        {
+            dd($this->source_path, $this->dest_path);
+            copy($this->source_path, $this->dest_path);
             return $this;
         }
 
@@ -52,8 +52,8 @@ class ImageGenerator {
 
     public function generate()
     {
-        $this->image = $this->manipulator->make($this->source_path);
-
+        $image_manager = new ImageManager;
+        $this->image = $image_manager->make($this->source_path);
         if($this->width() && $this->height())
         {
             $this->image->fit($this->width(), $this->height(), function ($constraint) {
@@ -76,7 +76,7 @@ class ImageGenerator {
             $this->image->crop($cw, $ch, $this->cropX(), $this->cropY());
         }
         
-        $this->image->save($this->new_path);
+        $this->image->save($this->dest_path);
         return $this;
     }
 
@@ -87,7 +87,11 @@ class ImageGenerator {
      */
     public function response()
     {
-        return $this->image->response($this->extension());
+        if ( ! $this->image)
+        {
+            $this->generate();
+        }
+        return $this->image->response($this->extension);
     }
 
     /**
@@ -95,42 +99,28 @@ class ImageGenerator {
      *
      * @return boolean
      */
-    public function canBeManipulated()
+    protected function canBeManipulated()
     {
-        return in_array($this->extension(), ['jpg', 'jpeg', 'png', 'gif']);
+        return in_array($this->extension, ['jpg', 'jpeg', 'png', 'gif']);
     }
 
     /**
-     * Get the extension of the file
+     * Whether there are any manipulation paramenters set
      *
-     * @return bool
+     * @return boolean
      */
-    public function extension()
+    protected function hasManipulations()
     {
-    	return strtolower(trim(strrchr($this->source_path, '.'), '.'));
+        return $this->width() || $this->height() || $this->cropWidth() || $this->cropHeight() || $this->cropX() || $this->cropY();
     }
 
-    public function outdated()
+    protected function outdated()
     {
-        if ( ! is_file($this->new_path))
+        if ( ! is_file($this->dest_path))
         {
             return TRUE;
         }
-        return filemtime($this->new_path) < filemtime($this->source_path);
-    }
-
-    public function multiplier()
-    {
-        return $this->multiplier;
-    }
-
-    public function multiply($val)
-    {
-    	if (is_null($val))
-    	{
-    		return NULL;
-    	}
-        return $val * $this->multiplier();
+        return filemtime($this->dest_path) < filemtime($this->source_path);
     }
 
     protected function width()
@@ -163,52 +153,63 @@ class ImageGenerator {
         return $this->multiply($this->crop_y);
     }
 
+    public function multiplier()
+    {
+        return $this->multiplier;
+    }
+
+    public function multiply($val)
+    {
+        if (is_null($val))
+        {
+            return NULL;
+        }
+        return $val * $this->multiplier();
+    }
+
     public function setSourcePath($source_path)
     {
-    	if ( ! is_file($source_path))
-    	{
-    		throw new Exception\InvalidImagePathException("Invalid source image: $source_path", 1);
-    	}
+        $this->extension = strtolower(trim(strrchr($source_path, '.'), '.'));
         $this->source_path = $source_path;
     }
 
-    public function setNewPath($new_path)
+    public function setDestPath($dest_path)
     {
-        $this->new_path = $new_path;
-    }
-
-    public function setMultiplier($multiplier)
-    {
-        $this->multiplier = $multiplier;
+        $this->dest_path = $dest_path;
     }
 
     public function setWidth($width)
     {
-        $this->width = $width;
+        $this->width = intval($width);
     }
 
     public function setHeight($height)
     {
-        $this->height = $height;
+        $this->height = intval($height);
     }
 
     public function setCropWidth($crop_width)
     {
-        $this->crop_width = $crop_width;
+        $this->crop_width = intval($crop_width);
     }
 
     public function setCropHeight($crop_height)
     {
-        $this->crop_height = $crop_height;
+        $this->crop_height = intval($crop_height);
     }
 
-    public function setCropX($x)
+    public function setCropX($crop_x)
     {
-        $this->crop_x = $x;
+        $this->crop_x = intval($crop_x);
     }
 
-    public function setCropY($y)
+    public function setCropY($crop_y)
     {
-        $this->crop_y = $y;
+        $this->crop_y = intval($crop_y);
+    }
+
+    public function setMultiplier($multiplier)
+    {
+        $this->multiplier = intval($multiplier);
     }
 }

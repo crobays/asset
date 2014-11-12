@@ -23,7 +23,7 @@ return [
 	
 	'root-path' => '.',
 
-	'arguments-seperator' => '___',
+	'file-arguments-seperator' => '___',
 
 	'argument-seperator' => '-',
 

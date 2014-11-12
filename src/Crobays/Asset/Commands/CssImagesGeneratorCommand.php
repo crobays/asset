@@ -3,8 +3,10 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Crobays\Asset\Image\ImagesGeneratorManager;
+use Crobays\Asset\Image\CssImageFinder;
 
-class ImageGeneratorCommand extends Command {
+class CssImagesGeneratorCommand extends Command implements \Crobays\Asset\Interfaces\LoggerInterface {
 
 	/**
 	 * The console command name.
@@ -23,17 +25,18 @@ class ImageGeneratorCommand extends Command {
 	/**
 	 * @var AssetGenerator
 	 */
-	protected $generate;
+	protected $generator;
 
 	/**
 	 * Create a new command instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(\Crobays\Asset\Image\ImageGenerator $generate)
+	public function __construct()
 	{
 		parent::__construct();
-		$this->generate = $generate;
+		$this->generator = new ImagesGeneratorManager(new CssImageFinder, $this);
+		$this->generator->setRootPath('./assets');
 	}
 
 	/**
@@ -43,7 +46,8 @@ class ImageGeneratorCommand extends Command {
 	 */
 	public function fire()
 	{
-		 //$this->generate->
+		$css_file = $this->argument('css-file');
+		$this->generator->generateImagesFromFile($css_file);
 	}
 
 	/**

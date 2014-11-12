@@ -4,161 +4,34 @@ use Crobays\Asset\Exception;
 
 class Image extends \Crobays\Asset\Asset {
 
-    public $image_directory_key = 'image';
+    protected $type = 'image';
 
-    public $uri_args = [
-        'w' => NULL,
-        'h' => NULL,
-        'cw' => NULL,
-        'ch' => NULL,
-        'cx' => NULL,
-        'cy' => NULL,
-    ];
-
-    public $attributes = [
+    protected $attributes = [
         'width' => NULL,
         'height' => NULL,
+        'class' => 'image',
         'src' => FALSE,
     ];
 
-    protected $generator;
+    protected $image_url;
 
-    public function __construct(array $config = array())
+    protected $sizes;
+
+    public function __construct(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $img_url)
     {
         parent::__construct($config);
-        $this->generator = new ImageGenerator;
-    }
-
-    public function setUri($uri)
-    {
-        $dirs = $this->configItem($key_1 = 'images-directories');
-        if ( ! array_key_exists($key_2 = $this->image_directory_key, $dirs))
-        {
-            throw new Exception\MissingConfigItemKeyException("Missing config item: $key_1 -> $key_2", 1);
-        }
-
-        if ( ! array_key_exists($key_3 = 'source', $dirs[$this->image_directory_key]))
-        {
-            throw new Exception\MissingConfigItemKeyException("Missing config item: $key_1 -> $key_2 -> $key_3", 1);
-        }
-
-        if ( ! array_key_exists($key_3 = 'uri', $dirs[$this->image_directory_key]))
-        {
-            throw new Exception\MissingConfigItemKeyException("Missing config item: $key_1 -> $key_2 -> $key_3", 1);
-        }
-
-        $source_dir = $dirs[$this->image_directory_key]['source'];
-        $uri_base = $dirs[$this->image_directory_key]['uri'];
-        
-        $source_path = $this->fetchPath($this->rootPath(), $source_dir, $uri);
-        $this->uri = $this->fetchPath($uri_base, $uri);
-
-        $this->generator->setSourcePath($source_path);
-        return $this;
-    }
-
-    /**
-     * Get the image directory
-     *
-     * @return string
-     */
-    public function fileNameBase()
-    {
-        $args = array();
-        foreach ($this->uri_args as $key => $val)
-        {
-            if (is_null($val))
-            {
-                continue;
-            }
-            $args[] = $key.$val;
-        }
-
-        if ( ! $args || ! $this->generator->canBeManipulated())
-        {
-            return parent::fileNameBase();
-        }
-        return parent::fileNameBase().$this->configItem('arguments-seperator').implode($this->configItem('argument-seperator'), $args);
-    }
-
-    public function setUriArg($key, $val)
-    {
-        $this->uri_args[$key] = $val;
-        return $this;
-    }
-
-    public function rootPath()
-    {
-        return $this->fetchPath($this->configItem('root-path'));
-    }
-
-    /**
-     * Set image manipulation parameters
-     *
-     * @return string
-     */
-    public function addParams(array $params)
-    {
-        foreach($params as $k => $v)
-        {
-            switch ($k) {
-                case 's':
-                case 'size':
-                    $this->setSize($v);
-                    continue 2;
-                case 'w':
-                case 'width':
-                    $v = $this->resolveArg('width', $v, TRUE);
-                    $this->setAttribute('width', $v, FALSE);
-                    $v = $this->resolveArg('width', $v);
-                    $this->generator->setWidth($v);
-                    $this->setUriArg('w', $v);
-                    continue 2;
-                case 'h':
-                case 'height':
-                    $v = $this->resolveArg('height', $v, TRUE);
-                    $this->setAttribute('height', $v, FALSE);
-                    $v = $this->resolveArg('height', $v);
-                    $this->generator->setHeight($v);
-                    $this->setUriArg('h', $v);
-                    continue 2;
-                case 'cw':
-                case 'crop-width':
-                    $v = $this->resolveArg('width', $v, TRUE);
-                    $this->setAttribute('width', $v);
-                    $v = $this->resolveArg('width', $v);
-                    $this->generator->setCropWidth($v);
-                    $this->setUriArg('cw', $v);
-                    continue 2;
-                case 'ch':
-                case 'crop-height':
-                    $v = $this->resolveArg('height', $v, TRUE);
-                    $this->setAttribute('height', $v);
-                    $v = $this->resolveArg('height', $v);
-                    $this->generator->setCropHeight($v);
-                    $this->setUriArg('ch', $v);
-                    continue 2;
-                case 'cx':
-                case 'crop-x':
-                    $this->generator->setCropX($v);
-                    $this->setUriArg('cx', $v);
-                    continue 2;
-                case 'cy':
-                case 'crop-y':
-                    $this->generator->setCropY($v);
-                    $this->setUriArg('cy', $v);
-                    continue 2;
-            }
-        }
-        return $this;
+        $this->image_url = $img_url;
     }
 
     public function url()
     {
-        $new_path = $this->fetchPath($this->rootPath(), $this->uri());
-        $this->generator->setNewPath($new_path);
-        $this->generator->make();
-        return parent::url();
+        $this->image_url->setBaseUrl($this->config->get('asset::url'));
+        $this->image_url->setRootPath($this->config->get('asset::root-path'));
+        $this->image_url->setFileArgumentsSeperator($this->config->get('asset::file-arguments-seperator'));
+        $this->image_url->setArgumentSeperator($this->config->get('asset::argument-seperator'));
+        $this->image_url->setSourceDir($this->config->get('asset::images-directories.'.$this->type.'.source'));
+        $this->image_url->setUriDir($this->config->get('asset::images-directories.'.$this->type.'.uri'));
+        return $this->image_url->url();
     }
 
     public function html()
@@ -167,18 +40,89 @@ class Image extends \Crobays\Asset\Asset {
         return '<img'.$this->attributesString().'>';
     }
 
+    /**
+     * Set image parameters
+     *
+     * @return string
+     */
+    public function addParams(array $params)
+    {
+        foreach($params as $key => $value)
+        {
+            $this->addParam($key, $value);
+        }
+        return $this;
+    }
+
+    /**
+     * Set image param
+     *
+     * @return string
+     */
+    public function addParam($key, $value)
+    {
+        switch ($key) {
+            case 's':
+            case 'size':
+                $this->setSize($value);
+                continue;
+            case 'w':
+            case 'width':
+                $value = $this->resolveArg('width', $value, TRUE);
+                $this->setAttribute('width', $value, FALSE);
+                $value = $this->resolveArg('width', $value);
+                $this->image_url->setWidth($value);
+                continue;
+            case 'h':
+            case 'height':
+                $value = $this->resolveArg('height', $value, TRUE);
+                $this->setAttribute('height', $value, FALSE);
+                $value = $this->resolveArg('height', $value);
+                $this->image_url->setHeight($value);
+                continue;
+            case 'cw':
+            case 'crop-width':
+                $value = $this->resolveArg('width', $value, TRUE);
+                $this->setAttribute('width', $value);
+                $value = $this->resolveArg('width', $value);
+                $this->image_url->setCropWidth($value);
+                continue;
+            case 'ch':
+            case 'crop-height':
+                $value = $this->resolveArg('height', $value, TRUE);
+                $this->setAttribute('height', $value);
+                $value = $this->resolveArg('height', $value);
+                $this->image_url->setCropHeight($value);
+                continue;
+            case 'cx':
+            case 'crop-x':
+                $this->image_url->setCropX($value);
+                continue;
+            case 'cy':
+            case 'crop-y':
+                $this->image_url->setCropY($value);
+                continue;
+        }
+        return $this;
+    }
+
     protected function setSize($size)
     {
-        if ( ! array_key_exists($size, $image_sizes = $this->configItem('images-sizes')))
+        if ( ! array_key_exists($size, $sizes = $this->sizes()))
         {
-            throw new Exception\InvalidImageArgumentException("Size $size is an unknown image-size", 1);
+            throw new Exception\InvalidImageArgumentException("Size $size is an unknown image-size, choose ".implode(', ', array_keys($sizes)), 1);
         }
 
         $this->addParams([
-            'width' => $image_sizes[$size][0],
-            'height' => $image_sizes[$size][1],
+            'width' => $sizes[$size][0],
+            'height' => $sizes[$size][1],
         ]);
         return $this;
+    }
+
+    protected function sizes()
+    {
+        return $this->config->get('asset::images-sizes');
     }
 
     protected function resolveArg($k, $v, $allow_percentage = FALSE)
@@ -188,10 +132,10 @@ class Image extends \Crobays\Asset\Asset {
             return $v;
         }
 
-        if (array_key_exists($v, $image_sizes = $this->configItem('images-sizes')))
+        if (array_key_exists($v, $sizes = $this->sizes()))
         {
             $key = strstr($k, 'width') ? 0 : 1;
-            return $this->resolveArg($k, $image_sizes[$v][$key]);
+            return $this->resolveArg($k, $sizes[$v][$key]);
         }
         return $v;
     }

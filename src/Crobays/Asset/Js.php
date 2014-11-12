@@ -14,7 +14,7 @@ class Js extends Asset {
      */
     public function uri()
     {
-        return $this->uri ?: $this->fetchPath($this->configItem('js'));
+        return $this->uri ?: $this->fetchPath($this->config->get('asset::js'));
     }
 
     /**
