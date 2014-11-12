@@ -23,8 +23,7 @@
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0",
-        "codeception/codeception": "~2.0",
-        "intervention/image": "dev-master"
+        "codeception/codeception": "~2.0"
     },
     "minimum-stability": "stable"
 }

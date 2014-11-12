@@ -280,6 +280,10 @@ class ImageUrl {
 
     public function setWidth($width)
     {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
     	$this->setUriArg('width', $width);
     	$this->generator->setWidth($width);
         return $this;
@@ -287,6 +291,10 @@ class ImageUrl {
 
     public function setHeight($height)
     {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
     	$this->setUriArg('height', $height);
     	$this->generator->setHeight($height);
         return $this;
@@ -294,6 +302,10 @@ class ImageUrl {
 
     public function setCropWidth($crop_width)
     {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
     	$this->setUriArg('crop-height', $crop_width);
     	$this->generator->setCropWidth($crop_width);
         return $this;
@@ -301,6 +313,10 @@ class ImageUrl {
 
     public function setCropHeight($crop_height)
     {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
     	$this->setUriArg('crop-width', $crop_height);
     	$this->generator->setCropHeight($crop_height);
         return $this;
@@ -308,6 +324,10 @@ class ImageUrl {
 
     public function setCropX($crop_x)
     {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
     	$this->setUriArg('crop-x', $crop_x);
     	$this->generator->setCropX($crop_x);
         return $this;
@@ -315,9 +335,18 @@ class ImageUrl {
 
     public function setCropY($crop_y)
     {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
     	$this->setUriArg('crop-y', $crop_y);
     	$this->generator->setCropY($crop_y);
         return $this;
+    }
+
+    public function manipulatable()
+    {
+    	return ! in_array($this->extension, ['svg']);
     }
 
     /**

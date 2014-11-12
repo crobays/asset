@@ -42,7 +42,6 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
         @mkdir(dirname($this->dest_path), 0777, TRUE);
         if ( ! $this->canBeManipulated() || ! $this->hasManipulations())
         {
-            dd($this->source_path, $this->dest_path);
             copy($this->source_path, $this->dest_path);
             return $this;
         }
@@ -180,36 +179,41 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
 
     public function setWidth($width)
     {
-        $this->width = intval($width);
+        $this->width = $this->fetchValue($width);
     }
 
     public function setHeight($height)
     {
-        $this->height = intval($height);
+        $this->height = $this->fetchValue($height);
     }
 
     public function setCropWidth($crop_width)
     {
-        $this->crop_width = intval($crop_width);
+        $this->crop_width = $this->fetchValue($crop_width);
     }
 
     public function setCropHeight($crop_height)
     {
-        $this->crop_height = intval($crop_height);
+        $this->crop_height = $this->fetchValue($crop_height);
     }
 
     public function setCropX($crop_x)
     {
-        $this->crop_x = intval($crop_x);
+        $this->crop_x = $this->fetchValue($crop_x);
     }
 
     public function setCropY($crop_y)
     {
-        $this->crop_y = intval($crop_y);
+        $this->crop_y = $this->fetchValue($crop_y);
     }
 
     public function setMultiplier($multiplier)
     {
-        $this->multiplier = intval($multiplier);
+        $this->multiplier = $this->fetchValue($multiplier);
+    }
+
+    public function fetchValue($value)
+    {
+        return is_null($value) ? NULL : intval($value);
     }
 }

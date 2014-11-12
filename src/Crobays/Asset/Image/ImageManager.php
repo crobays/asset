@@ -19,28 +19,28 @@ class ImageManager
     public $image;
 
 
-    /**
-     * Creates new instance of Image Manager
-     *
-     * @param array $config
-     */
-    public function __construct(array $config = array())
-    {
-        $this->configure(require(__DIR__.'/../../../config/config.php'));
-        $this->configure($config);
-    }
+    // /**
+    //  * Creates new instance of Image Manager
+    //  *
+    //  * @param array $config
+    //  */
+    // public function __construct(array $config = array())
+    // {
+    //     $this->configure(require(__DIR__.'/../../../config/config.php'));
+    //     $this->configure($config);
+    // }
 
-    /**
-     * Overrides configuration settings
-     *
-     * @param array $config
-     */
-    public function configure(array $config = array())
-    {
-        $this->config = array_replace($this->config, $config);
+    // /**
+    //  * Overrides configuration settings
+    //  *
+    //  * @param array $config
+    //  */
+    // public function configure(array $config = array())
+    // {
+    //     $this->config = array_replace($this->config, $config);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * Initiates an Image instance from different input types

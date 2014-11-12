@@ -105,13 +105,43 @@ class AssetManager
      * @var string
      * @return string
      */
+    public function imgUrl($file, $params = array())
+    {
+        $img_url = new Image\ImageUrl;
+        $img_url->setFile($file);
+        $img = new Image\Image($this->config, $img_url);
+        $img->addParams($params);
+        return $img->url();
+    }
+
+    /**
+     * Get a full image url
+     *
+     * @var string
+     * @return string
+     */
     public function pic($file, $params = array())
     {
         $img_url = new Image\ImageUrl;
         $img_url->setFile($file);
-        $img = new Image\Picture($this->config, $img_url);
-        $img->addParams($params);
-        return $img->html();
+        $pic = new Image\Picture($this->config, $img_url);
+        $pic->addParams($params);
+        return $pic->html();
+    }
+
+    /**
+     * Get a full image url
+     *
+     * @var string
+     * @return string
+     */
+    public function picUrl($file, $params = array())
+    {
+        $img_url = new Image\ImageUrl;
+        $img_url->setFile($file);
+        $pic = new Image\Picture($this->config, $img_url);
+        $pic->addParams($params);
+        return $pic->url();
     }
 
     // /**

@@ -29,11 +29,11 @@ return [
 
 	'images-sizes' => [
 		'tiny' => [50, NULL],
-		'small' => [240, NULL],
-		'medium' => [480, NULL],
-		'large' => [960, NULL],
-		'xlarge' => [1440, NULL],
-		'xxlarge' => [2560, NULL],
-        '100%' => ['xlarge', NULL],
+		'small' => [150, NULL],
+		'medium' => [400, NULL],
+		'large' => [800, NULL],
+		'xlarge' => [960, NULL],
+		'xxlarge' => [1440, NULL],
+        '100%' => ['large', NULL],
 	],
 ];
