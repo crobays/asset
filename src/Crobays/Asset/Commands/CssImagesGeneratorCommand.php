@@ -36,7 +36,7 @@ class CssImagesGeneratorCommand extends Command implements \Crobays\Asset\Interf
 	{
 		parent::__construct();
 		$this->generator = new ImagesGeneratorManager(new CssImageFinder, $this);
-		$this->generator->setRootPath('./assets');
+		$this->generator->setRootPath(\Config::get('asset::root-path'));
 	}
 
 	/**
