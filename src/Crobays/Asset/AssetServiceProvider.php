@@ -33,6 +33,11 @@ class AssetServiceProvider extends ServiceProvider {
 		//$this->app->bind('asset', 'Crobays\Asset\Asset');
 	}
 
+	/**
+	 * Boot the service provider.
+	 *
+	 * @return void
+	 */
 	public function boot()
 	{
 		$this->package('crobays/asset');

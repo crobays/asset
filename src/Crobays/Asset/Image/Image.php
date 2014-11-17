@@ -11,6 +11,7 @@ class Image extends \Crobays\Asset\Asset {
         'height' => NULL,
         'class' => 'image',
         'src' => FALSE,
+        'data-src2x' => FALSE,
     ];
 
     protected $image_url;
@@ -21,22 +22,23 @@ class Image extends \Crobays\Asset\Asset {
     {
         parent::__construct($config);
         $this->image_url = $img_url;
-    }
-
-    public function url()
-    {
         $this->image_url->setBaseUrl($this->config->get('asset::url'));
         $this->image_url->setRootPath($this->config->get('asset::root-path'));
         $this->image_url->setFileArgumentsSeperator($this->config->get('asset::file-arguments-seperator'));
         $this->image_url->setArgumentSeperator($this->config->get('asset::argument-seperator'));
         $this->image_url->setSourceDir($this->config->get('asset::images-directories.'.$this->type.'.source'));
         $this->image_url->setUriDir($this->config->get('asset::images-directories.'.$this->type.'.uri'));
+    }
+
+    public function url()
+    {
         return $this->image_url->url();
     }
 
     public function html()
     {
-        $this->setAttribute('src', $this->url());
+        $this->setAttribute('src', $this->image_url->url());
+        $this->setAttribute('data-src2x', $this->image_url->setMultiplier(2)->url());
         return '<img'.$this->attributesString().'>';
     }
 

@@ -11,6 +11,7 @@ class ImageUrl {
         'crop-height' => 'ch',
         'crop-x' => 'cx',
         'crop-y' => 'cy',
+        'multiplier' => '@'
     ];
 
     protected $uri_args = array();
@@ -134,33 +135,40 @@ class ImageUrl {
 				throw new Exception\InvalidImageArgumentException("Invalid image argument: $arg", 1);
 			}
 			
-			$key = $match[1];
-			$value = $match[2];
-			switch ($key)
-			{
-				case 'w':
-					$this->generator->setWidth($value);
-					continue 2;
-				case 'h':
-					$this->generator->setHeight($value);
-					continue 2;
-				case 'cw':
-					$this->generator->setCropWidth($value);
-					continue 2;
-				case 'ch':
-					$this->generator->setCropHeight($value);
-					continue 2;
-				case 'cx':
-					$this->generator->setCropX($value);
-					continue 2;
-				case 'cy':
-					$this->generator->setCropY($value);
-					continue 2;
-				case '@':
-					$this->generator->setMultiplier($value);
-					continue 2;
-	        }
+			$this->addArgument($match[1], $match[2]);
 		}
+	}
+
+	public function addArgument($key, $value)
+	{
+		switch ($key)
+		{
+			case 'w':
+				$this->setWidth($value);
+				continue;
+			case 'h':
+				$this->setHeight($value);
+				continue;
+			case 'cw':
+				$this->setCropWidth($value);
+				continue;
+			case 'ch':
+				$this->setCropHeight($value);
+				continue;
+			case 'cx':
+				$this->setCropX($value);
+				continue;
+			case 'cy':
+				$this->setCropY($value);
+				continue;
+			case '@':
+				$this->setMultiplier($value);
+				continue;
+			default:
+				return $this;
+        }
+
+        return $this;
 	}
 
 	public function setImageDirectories($directories)
@@ -265,17 +273,13 @@ class ImageUrl {
 
 	public function setUriArg($item, $val)
     {
+    	# reset the uri and url because these will likely
+        # be changed due to this method call
+        $this->uri = NULL;
+        $this->url = NULL;
+        
         $this->uri_args[$item] = $val;
         return $this;
-    }
-
-    public function uriArg($item)
-    {
-        if (array_key_exists($item, $this->uri_args))
-        {
-        	return $this->uri_args[$item];
-        }
-        return NULL;
     }
 
     public function setWidth($width)
@@ -344,9 +348,29 @@ class ImageUrl {
         return $this;
     }
 
+    public function setMultiplier($multiplier)
+    {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
+    	$this->setUriArg('multiplier', $multiplier.'x');
+    	$this->generator->setMultiplier($multiplier);
+        return $this;
+    }
+
     public function manipulatable()
     {
     	return ! in_array($this->extension, ['svg']);
+    }
+
+    public function uriArg($item)
+    {
+        if (array_key_exists($item, $this->uri_args))
+        {
+        	return $this->uri_args[$item];
+        }
+        return NULL;
     }
 
     /**
