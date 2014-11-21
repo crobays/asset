@@ -104,6 +104,8 @@ class Image extends \Crobays\Asset\Asset {
             case 'crop-y':
                 $this->image_url->setCropY($value);
                 continue;
+            default:
+                $this->setAttribute($key, $value);
         }
         return $this;
     }
