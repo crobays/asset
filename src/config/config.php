@@ -2,7 +2,7 @@
 
 return [
 	
-	'url' => '//assets.example.com',
+	'url' => 'http://assets-www.example.com',
 
 	'images-directories' => [
 		'picture' => [
