@@ -30,6 +30,11 @@ class AssetServiceProvider extends ServiceProvider {
 //            $asset_manager->configure($config);
             return $asset_manager;
         });
+        // CLI
+        $this->app->bindShared('command.asset.generate-css-images', function()
+        {
+            return new Commands\CssImagesGeneratorCommand;
+        });
 		//$this->app->bind('asset', 'Crobays\Asset\Asset');
 	}
 

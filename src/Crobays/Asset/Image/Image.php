@@ -38,7 +38,7 @@ class Image extends \Crobays\Asset\Asset {
     public function html()
     {
         $this->setAttribute('src', $this->image_url->url());
-        $this->setAttribute('data-src2x', $this->image_url->setMultiplier(2)->url());
+        $this->setAttribute('data-at2x', $this->image_url->setMultiplier(2)->url());
         return '<img'.$this->attributesString().'>';
     }
 
@@ -64,6 +64,10 @@ class Image extends \Crobays\Asset\Asset {
     public function addParam($key, $value)
     {
         switch ($key) {
+            case 'r':
+            case 'rotation':
+                $this->image_url->setRotation($value);
+                continue;
             case 's':
             case 'size':
                 $this->setSize($value);
@@ -103,6 +107,9 @@ class Image extends \Crobays\Asset\Asset {
             case 'cy':
             case 'crop-y':
                 $this->image_url->setCropY($value);
+                continue;
+            case '@':
+                $this->image_url->setMultiplier($value);
                 continue;
             default:
                 $this->setAttribute($key, $value);

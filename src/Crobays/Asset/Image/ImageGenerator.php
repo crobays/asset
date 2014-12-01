@@ -27,6 +27,8 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
 
 	protected $crop_y = NULL;
 
+    protected $rotation = NUlL;
+
 	public function make()
     {
         if ( ! $this->outdated())
@@ -53,14 +55,15 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
     {
         $image_manager = new ImageManager;
         $this->image = $image_manager->make($this->source_path);
-        if($this->width() && $this->height())
+        
+        if ($this->width() && $this->height())
         {
             $this->image->fit($this->width(), $this->height(), function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
         }
-        else if($this->width() || $this->height())
+        else if ($this->width() || $this->height())
         {
             $this->image->resize($this->width(), $this->height(), function ($constraint) {
                 $constraint->aspectRatio();
@@ -68,13 +71,27 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
             });
         }
 
-        if($this->cropWidth() || $this->cropHeight())
+        if ($this->cropWidth() || $this->cropHeight())
         {
             $cw = $this->cropWidth() ?: $this->width() ?: $this->image->width();
             $ch = $this->cropHeight() ?: $this->height() ?: $this->image->height();
-            $this->image->crop($cw, $ch, $this->cropX(), $this->cropY());
+            if ( ! is_null($this->cropX()) || ! is_null($this->cropY()))
+            {
+                $cx = is_null($this->cropX()) ? $cw / 2 - $this->image->width() / 2 : $this->cropX();
+                $cy = is_null($this->cropY()) ? $ch / 2 - $this->image->height() / 2 : $this->cropY();
+                $this->image->crop($cw, $ch, round($cx), round($cy));
+            }
+            else
+            {
+                $this->image->resizeCanvas($cw, $ch, 'center', false, 'ffffff');
+            }
         }
-        
+
+        if ($this->rotation)
+        {
+            $this->image->rotate($this->rotation);
+        }
+
         $this->image->save($this->dest_path);
         return $this;
     }
@@ -177,6 +194,11 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
         $this->dest_path = $dest_path;
     }
 
+    public function setRotation($degrees)
+    {
+        $this->rotation = $this->fetchValue($degrees);
+    }
+
     public function setWidth($width)
     {
         $this->width = $this->fetchValue($width);
@@ -214,6 +236,6 @@ class ImageGenerator implements \Crobays\Asset\Interfaces\ImageUrlParseReceiver 
 
     public function fetchValue($value)
     {
-        return is_null($value) ? NULL : intval($value);
+        return strval(intval($value)) === strval($value) ? intval($value) : NULL;
     }
 }

@@ -11,6 +11,7 @@ class ImageUrl {
         'crop-height' => 'ch',
         'crop-x' => 'cx',
         'crop-y' => 'cy',
+        'rotation' => 'r',
         'multiplier' => '@'
     ];
 
@@ -143,6 +144,9 @@ class ImageUrl {
 	{
 		switch ($key)
 		{
+			case 'r':
+				$this->setRotation($value);
+				continue;
 			case 'w':
 				$this->setWidth($value);
 				continue;
@@ -201,7 +205,11 @@ class ImageUrl {
 			{
 				continue;
 			}
-			$args[] = $key.$value;
+			if($key == '@')
+			{
+				$value .= 'x';
+			}
+			$args[] = str_replace($this->argument_seperator, '_', $key.$value);
 		}
 
 		if($args)
@@ -273,12 +281,28 @@ class ImageUrl {
 
 	public function setUriArg($item, $val)
     {
+        if (strval(intval($val)) !== strval($val))
+        {
+        	return $this;
+        }
+
     	# reset the uri and url because these will likely
         # be changed due to this method call
         $this->uri = NULL;
         $this->url = NULL;
-        
+
         $this->uri_args[$item] = $val;
+        return $this;
+    }
+
+    public function setRotation($degrees)
+    {
+    	if ( ! $this->manipulatable())
+    	{
+    		return $this;
+    	}
+    	$this->setUriArg('rotation', $degrees);
+    	$this->generator->setRotation($degrees);
         return $this;
     }
 
@@ -310,7 +334,7 @@ class ImageUrl {
     	{
     		return $this;
     	}
-    	$this->setUriArg('crop-height', $crop_width);
+    	$this->setUriArg('crop-width', $crop_width);
     	$this->generator->setCropWidth($crop_width);
         return $this;
     }
@@ -321,7 +345,7 @@ class ImageUrl {
     	{
     		return $this;
     	}
-    	$this->setUriArg('crop-width', $crop_height);
+    	$this->setUriArg('crop-height', $crop_height);
     	$this->generator->setCropHeight($crop_height);
         return $this;
     }
@@ -354,7 +378,12 @@ class ImageUrl {
     	{
     		return $this;
     	}
-    	$this->setUriArg('multiplier', $multiplier.'x');
+    	$multiplier = intval(trim($multiplier, 'x'));
+    	if ($multiplier < 2)
+    	{
+    		return $this;
+    	}
+    	$this->setUriArg('multiplier', $multiplier);
     	$this->generator->setMultiplier($multiplier);
         return $this;
     }
