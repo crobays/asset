@@ -1,7 +1,7 @@
 {
     "name": "crobays/asset",
     "description": "Simple asset helper to get asset (image, picture, stylesheet, script) elements or urls. Images and pictures have an option to resized and/or cropped dynamically.",
-    "version": "0.9.6",
+    "version": "0.9.7",
     "keywords": ["web", "laravel"],
     "license": "MIT",
     "type": "project",
