@@ -2,7 +2,7 @@
 
 return [
 	
-	'url' => 'http://assets-www.example.com',
+	'url' => 'http://assets-'.$_SERVER['HTTP_HOST'],
 
 	'images-directories' => [
 		'picture' => [
