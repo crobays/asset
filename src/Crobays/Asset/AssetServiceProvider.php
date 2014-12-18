@@ -20,22 +20,17 @@ class AssetServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		// $this->app->bind('asset', function($app){
-		// 	return new Asset();
-		// });
 		$app = $this->app;
 		$app['asset'] = $app->share(function ($app) {
-//			$config = $app['config']->get('asset::config');
             $asset_manager = new AssetManager(\App::make('config'));
-//            $asset_manager->configure($config);
             return $asset_manager;
         });
-        // CLI
-        $this->app->bindShared('command.asset.generate-css-images', function()
+
+        $this->app['command.asset.generate-css-images'] = $this->app->share(function($app)
         {
             return new Commands\CssImagesGeneratorCommand;
         });
-		//$this->app->bind('asset', 'Crobays\Asset\Asset');
+        $this->commands('command.asset.generate-css-images');
 	}
 
 	/**
@@ -54,9 +49,9 @@ class AssetServiceProvider extends ServiceProvider {
 	 *
 	 * @return array
 	 */
-	// public function provides()
-	// {
-	// 	return array();
-	// }
+	public function provides()
+	{
+		return array('asset');
+	}
 
 }
