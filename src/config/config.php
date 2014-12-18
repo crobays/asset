@@ -2,7 +2,7 @@
 
 return [
 	
-	'url' => 'http://assets-'.$_SERVER['HTTP_HOST'],
+	'url' => 'http://assets-'.Config::get('app.url'),
 
 	'images-directories' => [
 		'picture' => [
