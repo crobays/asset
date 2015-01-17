@@ -238,7 +238,11 @@ class ImageUrl {
 		}
 
 		$this->url = $this->fetchPath($this->base_url, $this->uri());
-		$this->make();
+		if (\App::environment('local'))
+		{
+			$this->make();
+		}
+		
 		return $this->url;
 	}
 

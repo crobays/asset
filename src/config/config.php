@@ -36,4 +36,15 @@ return [
 		'xxlarge' => [1440, NULL],
         '100%' => ['large', NULL],
 	],
+
+	'image-classes' => [
+		'image',
+	],
+
+	'picture-classes' => [
+		'picture',
+	],
+
+	'default-src-attr' => 'src',
+
 ];

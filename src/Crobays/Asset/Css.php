@@ -25,7 +25,7 @@ class Css extends Asset {
      */
     public function html()
     {
-    	$this->setAttribute('href', $this->url());
+    	$this->addAttribute('href', $this->url());
     	return '<link'.$this->attributesString().'>';
     }
 }

@@ -145,7 +145,7 @@ class Asset {
     }
 
     /**
-     * Set html attributes
+     * Add html attributes
      *
      * @return string
      */
@@ -153,24 +153,43 @@ class Asset {
     {
         foreach($params as $k => $v)
         {
-            $this->setAttribute($k, $v);
+            $this->addAttribute($k, $v);
         }
         return $this;
     }
 
     /**
-     * Set html attributes
+     * Add html attribute
      *
      * @return string
      */
-    public function setAttribute($attr, $val, $overwrite = TRUE)
+    public function addAttribute($attr, $val)
     {
-        if( ! $overwrite && array_key_exists($attr, $this->attributes) && ! is_null($this->attributes[$attr]))
+        if (is_array($val))
         {
-            return $this;
+            $val = implode(' ', $val);
         }
-        $this->attributes[$attr] = is_array($val) ? implode(' ', $val) : $val;
+
+        if (! is_null($existing = $this->getAttribute($attr)))
+        {
+            $val = implode(' ', array($existing, $val));
+        }
+        $this->attributes[$attr] = $val;
         return $this;
+    }
+
+    /**
+     * Get html attribute
+     *
+     * @return string
+     */
+    public function getAttribute($attr)
+    {
+        if ( ! array_key_exists($attr, $this->attributes))
+        {
+            return NULL;
+        }
+        return $this->attributes[$attr];
     }
 
     /**
