@@ -24,7 +24,7 @@ class Js extends Asset {
      */
     public function html()
     {
-    	$this->setAttribute('src', $this->url());
+    	$this->addAttribute('src', $this->url());
     	return '<script'.$this->attributesString().'></script>';
     }
 }

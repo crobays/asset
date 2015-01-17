@@ -7,8 +7,15 @@ class Picture extends Image {
     protected $attributes = [
         'width' => NULL,
         'height' => NULL,
-        'class' => 'picture',
-        'src' => FALSE,
+        'class' => NULL,
     ];
+
+    protected function addDefaultClasses()
+    {
+    	if ($classes = $this->config->get('asset::picture-classes'))
+    	{
+    		$this->addParam('class', $classes);
+    	}
+    }
 
 }
