@@ -49,7 +49,6 @@ class Image extends \Crobays\Asset\Asset {
     public function html()
     {
         $this->addAttribute($this->source_attribute, $this->image_url->url());
-        //$this->addAttribute('data-at2x', $this->image_url->setMultiplier(2)->url());
         return '<img'.$this->attributesString().'>';
     }
 

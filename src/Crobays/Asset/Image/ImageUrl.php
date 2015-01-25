@@ -5,15 +5,17 @@ use Crobays\Asset\Exception;
 class ImageUrl {
 
 	protected $keys = [
-        'width' => 'w',
-        'height' => 'h',
-        'crop-width' => 'cw',
-        'crop-height' => 'ch',
-        'crop-x' => 'cx',
-        'crop-y' => 'cy',
-        'rotation' => 'r',
-        'multiplier' => '@'
+		'width' => 'w',
+		'height' => 'h',
+		'crop-width' => 'cw',
+		'crop-height' => 'ch',
+		'crop-x' => 'cx',
+		'crop-y' => 'cy',
+		'rotation' => 'r',
+		//'multiplier' => '@'
     ];
+
+    protected $multiplier;
 
     protected $uri_args = array();
 
@@ -205,10 +207,6 @@ class ImageUrl {
 			{
 				continue;
 			}
-			if($key == '@')
-			{
-				$value .= 'x';
-			}
 			$args[] = str_replace($this->argument_seperator, '_', $key.$value);
 		}
 
@@ -217,6 +215,7 @@ class ImageUrl {
 			$file = $this->file_base
 				.$this->file_arguments_seperator
 				.implode($this->argument_seperator, $args)
+				.($this->multiplier ? '@'.$this->multiplier.'x' : '')
 				.'.'
 				.$this->extension;
 
@@ -238,12 +237,18 @@ class ImageUrl {
 		}
 
 		$this->url = $this->fetchPath($this->base_url, $this->uri());
-		if (\App::environment('local'))
+		if ( ! \App::environment('local'))
 		{
-			$this->make();
+			return $this->url;
 		}
-		
-		return $this->url;
+
+		$url = $this->url;
+
+		$this->make();
+		$this->setMultiplier(2);
+		$this->make();
+
+		return $url;
 	}
 
 	public function make()
@@ -387,7 +392,9 @@ class ImageUrl {
     	{
     		return $this;
     	}
-    	$this->setUriArg('multiplier', $multiplier);
+    	$this->url = NULL;
+    	$this->uri = NULL;
+    	$this->multiplier = $multiplier;
     	$this->generator->setMultiplier($multiplier);
         return $this;
     }
