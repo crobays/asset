@@ -13,7 +13,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Crobays\\": "src/Crobays"
+            "Crobays\\Asset\\": "src/Crobays/Asset"
         }
     },
     "require": {
