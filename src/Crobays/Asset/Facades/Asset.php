@@ -1,11 +1,11 @@
-<?php namespace Crobays\Facades;
+<?php namespace Crobays\Asset\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Image extends Facade {
+class Asset extends Facade {
 
 	protected static function getFacadeAccessor()
 	{
-		return 'image';
+		return 'asset';
 	}
 }
