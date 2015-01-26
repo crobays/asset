@@ -41,7 +41,7 @@ class AssetServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('crobays/asset');
-		AliasLoader::getInstance()->alias('Asset', 'Crobays\Facades\Asset');
+		AliasLoader::getInstance()->alias('Asset', 'Crobays\Asset\Facades\Asset');
 	}
 
 	/**
