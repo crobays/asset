@@ -21,8 +21,8 @@ class Image extends \Crobays\Asset\Asset {
     public function __construct(\Illuminate\Config\Repository $config, \Crobays\Asset\Image\ImageUrl $img_url)
     {
         parent::__construct($config);
-        // Set the default source attr and if not exist default to src for upgrading users
-        $this->setSourceAttribute($this->config->get('asset::default-src-attr') ?: 'src');
+         // Set the default source attr and if not exist default to src for upgrading users
+        $this->setSourceAttribute($this->defaultSourceAttribute());
         $this->addDefaultClasses();
         $this->image_url = $img_url;
         $this->image_url->setBaseUrl($this->config->get('asset::url'));
@@ -31,6 +31,11 @@ class Image extends \Crobays\Asset\Asset {
         $this->image_url->setArgumentSeperator($this->config->get('asset::argument-seperator'));
         $this->image_url->setSourceDir($this->config->get('asset::images-directories.'.$this->type.'.source'));
         $this->image_url->setUriDir($this->config->get('asset::images-directories.'.$this->type.'.uri'));
+    }
+
+    protected function defaultSourceAttribute()
+    {
+        return $this->config->get('asset::default-img-src-attr') ?: 'src';
     }
 
     protected function addDefaultClasses()

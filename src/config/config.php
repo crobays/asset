@@ -42,7 +42,7 @@ return [
 	],
 
 	'picture-classes' => [
-		'picture',
+		'pictureeeee',
 	],
 
 	'default-src-attr' => 'src',

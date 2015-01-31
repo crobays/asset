@@ -20,8 +20,7 @@ class AssetServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$app = $this->app;
-		$app['asset'] = $app->share(function ($app) {
+		$this->app['asset'] = $this->app->share(function ($app) {
             $asset_manager = new AssetManager(\App::make('config'));
             return $asset_manager;
         });

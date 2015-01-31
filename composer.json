@@ -11,11 +11,6 @@
             "email": "0VxMFScFvK9wnCyB@userex.nl"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "Crobays\\Asset\\": "src/Crobays/Asset"
-        }
-    },
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "4.2.*",
@@ -25,6 +20,11 @@
     "require-dev": {
         "phpspec/phpspec": "~2.0",
         "codeception/codeception": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Crobays\\Asset\\": "src/Crobays/Asset"
+        }
     },
     "minimum-stability": "stable"
 }

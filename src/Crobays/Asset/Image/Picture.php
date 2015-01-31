@@ -10,6 +10,11 @@ class Picture extends Image {
         'class' => NULL,
     ];
 
+    protected function defaultSourceAttribute()
+    {
+        return $this->config->get('asset::default-pic-src-attr') ?: parent::defaultSourceAttribute();
+    }
+
     protected function addDefaultClasses()
     {
     	if ($classes = $this->config->get('asset::picture-classes'))
